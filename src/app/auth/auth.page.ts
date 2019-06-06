@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { User } from '../shared/model/user.model';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -8,13 +12,17 @@ import { Router } from '@angular/router';
 })
 export class AuthPage implements OnInit {
 
-  constructor(private router: Router) { }
+  username = new FormControl();
+  password = new FormControl();
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
   }
 
   login() {
-    this.router.navigateByUrl('/home');
+    this.authService.login(new User(-1, '', this.username.value, this.password.value, '', new Date())).subscribe((us: User) => {
+      console.log(us);
+    });
   }
 
 }

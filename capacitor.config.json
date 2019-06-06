@@ -1,0 +1,7 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "finances-easy-app",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
