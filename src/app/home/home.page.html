@@ -6,6 +6,8 @@
     <ion-title>
       Home
     </ion-title>
+    <ion-icon name="person" slot="end"></ion-icon>
+    <ion-text slot="end">{{ (userObs | async).name }}</ion-text>
   </ion-toolbar>
 </ion-header>
 

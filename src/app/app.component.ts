@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -16,16 +16,32 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'List',
-      url: '/list',
+      title: 'Expense',
+      url: '/expense',
       icon: 'list'
-    }
+    },
+    {
+      title: 'Income',
+      url: '/income',
+      icon: 'list'
+    },
+    {
+      title: 'Category',
+      url: '/category',
+      icon: 'list'
+    },
+    {
+      title: 'Budget',
+      url: '/budget',
+      icon: 'list'
+    },
   ];
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private translate: TranslateService
   ) {
     this.initializeApp();
   }
@@ -35,5 +51,9 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  changeLang(language: string) {
+    this.translate.use(language);
   }
 }

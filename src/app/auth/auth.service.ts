@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { BehaviorSubject, from, of } from 'rxjs';
@@ -11,15 +11,15 @@ import { User } from '../shared/model/user.model';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy {
 
-  private _user = new BehaviorSubject<User>(null);
+  private user = new BehaviorSubject<User>(null);
   private activeLogoutTimer: any;
   private logonEndpoint = environment.api.concat('public/logon');
   private userEndpoint = environment.api.concat('user');
 
   get userIsAuthenticated() {
-    return this._user.asObservable().pipe(
+    return this.user.asObservable().pipe(
       map(user => {
         if (user) {
           return !!user.token;
@@ -30,11 +30,11 @@ export class AuthService {
     );
   }
 
-  get userId() {
-    return this._user.asObservable().pipe(
+  get loggedUser() {
+    return this.user.asObservable().pipe(
       map(user => {
         if (user) {
-          return user.id;
+          return user;
         } else {
           return null;
         }
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   get token() {
-    return this._user.asObservable().pipe(
+    return this.user.asObservable().pipe(
       map(user => {
         if (user) {
           return user.token;
@@ -85,7 +85,7 @@ export class AuthService {
       }),
       tap(user => {
         if (user) {
-          this._user.next(user);
+          this.user.next(user);
           this.autoLogout(user.tokenDuration);
         }
       }),
@@ -114,12 +114,12 @@ export class AuthService {
     }
     return this.http.get<void>(this.userEndpoint.concat('/logout')).pipe(
       map(() => {
-        this._user.next(null);
+        this.user.next(null);
         Plugins.Storage.remove({ key: 'authData' });
-        this.router.navigate(['/auth']);
+        this.router.navigate([ '/auth' ]);
       }),
       catchError((err) => {
-        return of(console.log(err));
+        return of(console.error(err));
       })
     );
 
@@ -145,9 +145,8 @@ export class AuthService {
       new Date().getTime() + + 3600 * 1000
     );
     user.tokenExpirationDate = expirationTime;
-    this._user.next(user);
+    this.user.next(user);
     this.autoLogout(user.tokenDuration);
     Plugins.Storage.set({ key: 'authData', value: JSON.stringify(user) });
-    Plugins.Storage.get({ key: 'authData' }).then(authData => console.log(authData.value));
   }
 }

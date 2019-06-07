@@ -16,6 +16,8 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
+          <ion-button (click)="changeLang('pt')">{{ 'Portuguese' | translate }}</ion-button>
+          <ion-button (click)="changeLang('en')">{{ 'English' | translate }}</ion-button>
         </ion-list>
       </ion-content>
     </ion-menu>

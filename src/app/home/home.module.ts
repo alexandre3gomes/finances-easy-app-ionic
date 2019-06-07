@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { HomePage } from './home.page';
 
@@ -11,6 +12,7 @@ import { HomePage } from './home.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    TranslateModule,
     RouterModule.forChild([
       {
         path: '',
@@ -18,6 +20,6 @@ import { HomePage } from './home.page';
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [ HomePage ]
 })
-export class HomePageModule {}
+export class HomePageModule { }

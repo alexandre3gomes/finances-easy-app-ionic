@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from './shared/auth.guard';
+
 const routes: Routes = [
   {
     path: '',
@@ -13,22 +15,24 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    loadChildren: './home/home.module#HomePageModule',
+    canLoad: [ AuthGuard ]
   },
   {
     path: 'list',
-    loadChildren: './list/list.module#ListPageModule'
+    loadChildren: './list/list.module#ListPageModule',
+    canLoad: [ AuthGuard ]
   },
-  { path: 'category', loadChildren: './category/category.module#CategoryPageModule' },
-  { path: 'expense', loadChildren: './expense/expense.module#ExpensePageModule' },
-  { path: 'budget', loadChildren: './budget/budget.module#BudgetPageModule' },
-  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule' }
+  { path: 'category', loadChildren: './category/category.module#CategoryPageModule', canLoad: [ AuthGuard ] },
+  { path: 'expense', loadChildren: './expense/expense.module#ExpensePageModule', canLoad: [ AuthGuard ] },
+  { path: 'budget', loadChildren: './budget/budget.module#BudgetPageModule', canLoad: [ AuthGuard ] },
+  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canLoad: [ AuthGuard ] }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes , { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule]
+  exports: [ RouterModule ]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
