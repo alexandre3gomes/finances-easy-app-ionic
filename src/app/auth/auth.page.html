@@ -12,11 +12,11 @@
       <ion-col size-sm="6" offset-sm="3">
         <ion-list>
           <ion-item>
-            <ion-label position="floating">Username</ion-label>
+            <ion-label position="floating">{{ 'Username' | translate }}</ion-label>
             <ion-input type="username" name="username" [formControl]="username"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label position="floating">Password</ion-label>
+            <ion-label position="floating">{{ 'Password' | translate }}</ion-label>
             <ion-input type="password" name="password" [formControl]="password">
             </ion-input>
           </ion-item>
@@ -26,7 +26,7 @@
     <ion-row>
       <ion-col size-sm="6" offset-sm="3">
         <ion-button color="primary" expand="block" (click)="login()">
-          Login
+          {{ 'Login' | translate }}
         </ion-button>
       </ion-col>
     </ion-row>

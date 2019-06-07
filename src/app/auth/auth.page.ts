@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { User } from '../shared/model/user.model';
 import { AuthService } from './auth.service';
@@ -10,19 +11,22 @@ import { AuthService } from './auth.service';
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
 })
-export class AuthPage implements OnInit {
+export class AuthPage implements OnInit, OnDestroy {
 
   username = new FormControl();
   password = new FormControl();
+  private userSubscription: Subscription;
   constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
+  }
+
   login() {
-    this.authService.login(new User(-1, '', this.username.value, this.password.value, '', new Date())).subscribe((us: User) => {
-      console.log(us);
-    });
+    this.userSubscription = this.authService.login(new User(-1, '', this.username.value, this.password.value, '', new Date())).subscribe();
   }
 
 }

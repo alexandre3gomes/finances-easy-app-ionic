@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Home
+      {{ 'Home' | translate }}
     </ion-title>
     <ion-icon name="person" slot="end"></ion-icon>
     <ion-text slot="end">{{ (userObs | async).name }}</ion-text>
@@ -12,5 +12,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-text>Home</ion-text>
+  <ion-card>
+    <ion-card-title>{{ 'Total income' }}</ion-card-title>
+  </ion-card>
 </ion-content>

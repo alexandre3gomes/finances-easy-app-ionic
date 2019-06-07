@@ -5,12 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { BudgetPage } from './budget.page';
+import { IncomePage } from './income.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: BudgetPage
+    component: IncomePage
   }
 ];
 
@@ -22,6 +22,6 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [BudgetPage]
+  declarations: [IncomePage]
 })
-export class BudgetPageModule { }
+export class IncomePageModule { }

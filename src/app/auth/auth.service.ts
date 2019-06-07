@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
 import { BehaviorSubject, from, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, take, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { User } from '../shared/model/user.model';
@@ -13,13 +13,13 @@ import { User } from '../shared/model/user.model';
 })
 export class AuthService implements OnDestroy {
 
-  private user = new BehaviorSubject<User>(null);
+  private _user = new BehaviorSubject<User>(null);
   private activeLogoutTimer: any;
   private logonEndpoint = environment.api.concat('public/logon');
   private userEndpoint = environment.api.concat('user');
 
   get userIsAuthenticated() {
-    return this.user.asObservable().pipe(
+    return this._user.asObservable().pipe(
       map(user => {
         if (user) {
           return !!user.token;
@@ -31,7 +31,7 @@ export class AuthService implements OnDestroy {
   }
 
   get loggedUser() {
-    return this.user.asObservable().pipe(
+    return this._user.asObservable().pipe(
       map(user => {
         if (user) {
           return user;
@@ -43,7 +43,7 @@ export class AuthService implements OnDestroy {
   }
 
   get token() {
-    return this.user.asObservable().pipe(
+    return this._user.asObservable().pipe(
       map(user => {
         if (user) {
           return user.token;
@@ -85,7 +85,7 @@ export class AuthService implements OnDestroy {
       }),
       tap(user => {
         if (user) {
-          this.user.next(user);
+          this._user.next(user);
           this.autoLogout(user.tokenDuration);
         }
       }),
@@ -97,6 +97,7 @@ export class AuthService implements OnDestroy {
 
   login(user: User) {
     return this.http.post<User>(this.logonEndpoint.concat('/login'), user).pipe(
+      take(1),
       map((us: User) => {
         this.setUserData(us);
         this.router.navigateByUrl('/home');
@@ -113,10 +114,11 @@ export class AuthService implements OnDestroy {
       clearTimeout(this.activeLogoutTimer);
     }
     return this.http.get<void>(this.userEndpoint.concat('/logout')).pipe(
+      take(1),
       map(() => {
-        this.user.next(null);
+        this._user.next(new User(-1, '', '', '', '', new Date()));
         Plugins.Storage.remove({ key: 'authData' });
-        this.router.navigate([ '/auth' ]);
+        this.router.navigateByUrl('/auth');
       }),
       catchError((err) => {
         return of(console.error(err));
@@ -145,7 +147,7 @@ export class AuthService implements OnDestroy {
       new Date().getTime() + + 3600 * 1000
     );
     user.tokenExpirationDate = expirationTime;
-    this.user.next(user);
+    this._user.next(user);
     this.autoLogout(user.tokenDuration);
     Plugins.Storage.set({ key: 'authData', value: JSON.stringify(user) });
   }

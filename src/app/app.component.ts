@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Platform } from '@ionic/angular';
+import { MenuController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+
   public appPages = [
     {
       title: 'Home',
@@ -16,14 +19,14 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'Expense',
+      title: 'Expenses',
       url: '/expense',
-      icon: 'list'
+      icon: 'cash'
     },
     {
-      title: 'Income',
+      title: 'Incomes',
       url: '/income',
-      icon: 'list'
+      icon: 'logo-euro'
     },
     {
       title: 'Category',
@@ -33,7 +36,7 @@ export class AppComponent {
     {
       title: 'Budget',
       url: '/budget',
-      icon: 'list'
+      icon: 'calendar'
     },
   ];
 
@@ -41,8 +44,16 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService,
+    private menuCtrl: MenuController
   ) {
+    this.translate.addLangs(['en', 'pt']);
+    this.translate.setDefaultLang('pt');
+    const browserLang = this.translate.getBrowserLang();
+    this.translate.use(
+      browserLang.match(/en|pt/) ? browserLang : 'pt'
+    );
     this.initializeApp();
   }
 
@@ -55,5 +66,10 @@ export class AppComponent {
 
   changeLang(language: string) {
     this.translate.use(language);
+  }
+
+  logout() {
+    this.menuCtrl.close();
+    this.authService.logout().subscribe();
   }
 }
