@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, IonItemSliding, ModalController } from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
@@ -11,7 +10,7 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
 @Component({
   selector: 'app-category',
   templateUrl: './category.page.html',
-  styleUrls: [ './category.page.scss' ],
+  styleUrls: ['./category.page.scss'],
 })
 export class CategoryPage implements OnInit, OnDestroy {
 
@@ -21,7 +20,7 @@ export class CategoryPage implements OnInit, OnDestroy {
   constructor(private categoryService: CategoryService,
     private alertCtrl: AlertController,
     private translate: TranslateService,
-    private router: Router,
+    private toastCtrl: ToastController,
     private modalCtrl: ModalController) { }
 
   ngOnInit() {
@@ -35,7 +34,32 @@ export class CategoryPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.categoryService.resetPage();
     this.categoryService.fetchCategories().subscribe();
+  }
+
+  newCategory() {
+    this.modalCtrl
+      .create({
+        component: EditCategoryComponent
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      }).then(resultData => {
+        if (resultData.role === 'confirm') {
+          this.categoryService.createCategory(resultData.data).subscribe();
+          let msg = this.translate.instant('Category') + ' ' + this.translate.instant('Saved');
+          this.toastCtrl.create(
+            {
+              header: msg,
+              color: 'primary',
+              duration: 1000,
+              showCloseButton: true
+            }
+          ).then(toastEl => toastEl.present());
+        }
+      });
   }
 
   remove(id: number, slidingEl: IonItemSliding) {
@@ -56,7 +80,7 @@ export class CategoryPage implements OnInit, OnDestroy {
           cssClass: 'danger'
         }
       ]
-    }).then(alertEl => alertEl.present());
+    }).then(toastEl => toastEl.present());
   }
 
   edit(id: number, slidingEl: IonItemSliding) {
@@ -70,12 +94,38 @@ export class CategoryPage implements OnInit, OnDestroy {
         modalEl.present();
         return modalEl.onDidDismiss();
       }).then(resultData => {
-        console.log(resultData);
+        if (resultData.role === 'confirm') {
+          this.categoryService.editCategory(resultData.data).subscribe();
+          let msg = this.translate.instant('Category') + ' ' + this.translate.instant('Edited');
+          this.toastCtrl.create(
+            {
+              header: msg,
+              color: 'primary',
+              duration: 1000,
+              showCloseButton: true
+            }
+          ).then(toastEl => toastEl.present());
+        }
       });
   }
 
   confirmRemove(id: number) {
-    console.log('Category', id);
+    this.categoryService.deleteCategory(id).subscribe(() => {
+      let msg = this.translate.instant('Category') + ' ' + this.translate.instant('Deleted');
+      this.toastCtrl.create(
+        {
+          header: msg,
+          color: 'primary',
+          duration: 1000,
+          showCloseButton: true
+        }
+      ).then(toastEl => toastEl.present());
+    });
+  }
+
+  loadData(event) {
+    this.categoryService.incrementPage();
+    this.categoryService.fetchCategories().subscribe(() => event.target.complete());
   }
 
 }

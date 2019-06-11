@@ -81,5 +81,8 @@
 	"Error": "Erro",
 	"There is some error": "Aconteceu algum erro",
 	"Are you sure?": "Tem certeza?",
-	"Confirm": "Confirme"
+	"Confirm": "Confirme",
+	"There is relationed data": "Existem dados relacionados",
+	"Edited": "Editado(a)",
+	"Deleted": "Excluído(a)"
 }

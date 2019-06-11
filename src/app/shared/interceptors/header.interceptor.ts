@@ -34,7 +34,7 @@ export class HeaderInterceptor implements HttpInterceptor {
       {
         header: this.translate.instant('Error'),
         message: this.translate.instant('There is some error'),
-        buttons: [ 'Ok' ]
+        buttons: [this.translate.instant('Close')]
       }
     );
     loading.then(loadingEl => loadingEl.present());
@@ -52,11 +52,14 @@ export class HeaderInterceptor implements HttpInterceptor {
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 409) {
-          alert.then(alertEl => alertEl.present());
+          alert.then(alertEl => {
+            alertEl.message = this.translate.instant('There is relationed data');
+            alertEl.present();
+          });
           loading.then(loadingEl => loadingEl.dismiss());
         } else {
           alert.then(alertEl => alertEl.present());
-          this.router.navigate([ '/auth' ]);
+          this.router.navigate(['/auth']);
           loading.then(loadingEl => loadingEl.dismiss());
           return throwError(error);
         }

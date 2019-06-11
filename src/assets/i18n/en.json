@@ -81,5 +81,8 @@
 	"Error": "Error",
 	"There is some error": "There is some error",
 	"Are you sure?": "Are you sure?",
-	"Confirm": "Confirm"
+	"Confirm": "Confirm",
+	"There is relationed data": "There is relationed data",
+	"Edited": "Edited",
+	"Deleted": "Deleted"
 }

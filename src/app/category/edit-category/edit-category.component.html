@@ -8,15 +8,19 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-label position="floating">{{ 'Name' | translate }}</ion-label>
-      <ion-input type="text" [formControl]="name">
-      </ion-input>
-    </ion-item>
-  </ion-list>
-  <ion-button color="primary" expand="full" (click)="save()" [disabled]="!formCategory.valid">
-    {{ 'Salvar' | translate }}
-  </ion-button>
+<ion-content padding>
+  <form #categoryForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">{{ 'Name' | translate }}</ion-label>
+        <ion-input type="text" name="name" [(ngModel)]="category.name" required>
+        </ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-button type="submit" color="primary" shape="round" expand="full" (click)="save()"
+      [disabled]="!categoryForm.valid">
+      {{ 'Save changes' | translate }}
+    </ion-button>
+  </form>
 </ion-content>
