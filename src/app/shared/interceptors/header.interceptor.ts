@@ -8,43 +8,59 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { AuthService } from '../../auth/auth.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class HeaderInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router,
+    private authService: AuthService,
+    private loadingCtrl: LoadingController,
+    private translate: TranslateService,
+    private alertCtrl: AlertController) {
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // loader start
+    const loading = this.loadingCtrl.create({ keyboardClose: true, message: this.translate.instant('Loading') });
+    const alert = this.alertCtrl.create(
+      {
+        header: this.translate.instant('Error'),
+        message: this.translate.instant('There is some error'),
+        buttons: [ 'Ok' ]
+      }
+    );
+    loading.then(loadingEl => loadingEl.present());
     let token: string;
     this.authService.token.subscribe(tok => {
-      token = tok
+      token = tok;
     });
-    const modified = req.clone({ setHeaders: { 'Authorization': 'Bearer ' + token } });
+    const modified = req.clone({ setHeaders: { Authorization: 'Bearer ' + token } });
     return next.handle(modified).pipe(
       map((event: HttpHeaderResponse) => {
         if (event.status === 200) {
-          // loader stop
+          loading.then(loadingEl => loadingEl.dismiss());
         }
         return event;
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 409) {
-          // Message error
-          // loader stop
+          alert.then(alertEl => alertEl.present());
+          loading.then(loadingEl => loadingEl.dismiss());
         } else {
-          this.router.navigate(['/auth']);
-          // loader stop
+          alert.then(alertEl => alertEl.present());
+          this.router.navigate([ '/auth' ]);
+          loading.then(loadingEl => loadingEl.dismiss());
           return throwError(error);
         }
       })
     );
   }
-
 }

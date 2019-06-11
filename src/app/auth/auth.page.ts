@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { User } from '../shared/model/user.model';
@@ -9,16 +8,27 @@ import { AuthService } from './auth.service';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
-  styleUrls: ['./auth.page.scss'],
+  styleUrls: [ './auth.page.scss' ],
 })
 export class AuthPage implements OnInit, OnDestroy {
 
-  username = new FormControl();
-  password = new FormControl();
+  public formLogin: FormGroup;
   private userSubscription: Subscription;
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private authService: AuthService, private fb: FormBuilder) { }
+
+  get username() {
+    return this.formLogin.get('username');
+  }
+
+  get password() {
+    return this.formLogin.get('password');
+  }
 
   ngOnInit() {
+    this.formLogin = this.fb.group({
+      username: [ '', Validators.required ],
+      password: [ '', [ Validators.required, Validators.minLength(6) ] ]
+    })
   }
 
   ngOnDestroy() {

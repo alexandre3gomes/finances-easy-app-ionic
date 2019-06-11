@@ -76,5 +76,10 @@
 	"Total expense": "Total de gastos",
 	"Balance": "Saldo",
 	"Total planned": "Total planejado",
-	"Home": "Início"
+	"Home": "Início",
+	"Loading": "Carregando",
+	"Error": "Erro",
+	"There is some error": "Aconteceu algum erro",
+	"Are you sure?": "Tem certeza?",
+	"Confirm": "Confirme"
 }

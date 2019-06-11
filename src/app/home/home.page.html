@@ -12,7 +12,28 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-title>{{ 'Total income' }}</ion-card-title>
+  <ion-card color="success">
+    <ion-card-header>
+      <ion-card-subtitle>{{ 'Balance' | translate }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      {{  (actualIncomeObs | async) - (actualExpenseObs | async) | currency:'€' }}
+    </ion-card-content>
+  </ion-card>
+  <ion-card color="danger">
+    <ion-card-header>
+      <ion-card-subtitle>{{ 'Total expense' | translate }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      {{ actualExpenseObs | async | currency:'€' }}
+    </ion-card-content>
+  </ion-card>
+  <ion-card color="primary">
+    <ion-card-header>
+      <ion-card-subtitle>{{ 'Total income' | translate }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      {{ actualIncomeObs | async | currency:'€' }}
+    </ion-card-content>
   </ion-card>
 </ion-content>

@@ -76,5 +76,10 @@
 	"Total expense": "Total expense",
 	"Balance": "Balance",
 	"Total planned": "Total planned",
-	"Home": "Home"
+	"Home": "Home",
+	"Loading": "Loading",
+	"Error": "Error",
+	"There is some error": "There is some error",
+	"Are you sure?": "Are you sure?",
+	"Confirm": "Confirm"
 }

@@ -13,12 +13,14 @@ import { HomeService } from './home.service';
 export class HomePage implements OnInit, OnDestroy {
 
   userObs: Observable<User> = this.authService.loggedUser;
-
+  actualIncomeObs = this.homeService.actualIncomes;
+  actualExpenseObs = this.homeService.actualExpenses;
 
   constructor(private authService: AuthService, private homeService: HomeService) { }
 
   ngOnInit() {
     this.homeService.fetchActualIncomes().subscribe();
+    this.homeService.fetchActualExpenses().subscribe();
   }
 
   ngOnDestroy() {
