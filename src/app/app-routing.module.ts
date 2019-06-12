@@ -21,7 +21,6 @@ const routes: Routes = [
   { path: 'category', loadChildren: './category/category.module#CategoryPageModule', canLoad: [AuthGuard] },
   { path: 'income', loadChildren: './income/income.module#IncomePageModule', canLoad: [AuthGuard] },
   { path: 'expense', loadChildren: './expense/expense.module#ExpensePageModule', canLoad: [AuthGuard] },
-  { path: 'budget', loadChildren: './budget/budget.module#BudgetPageModule', canLoad: [AuthGuard] },
   { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canLoad: [AuthGuard] },
   { path: 'income', loadChildren: './income/income.module#IncomePageModule' }
 

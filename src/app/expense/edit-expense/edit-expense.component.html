@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ expense.name }}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <form #expenseForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">{{ 'Name' | translate }}</ion-label>
+        <ion-input type="text" name="name" [(ngModel)]="expense.name" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'Value' | translate }}</ion-label>
+        <ion-input type="number" name="value" [(ngModel)]="expense.value" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'Category' | translate }}</ion-label>
+        <ion-select interface="action-sheet" name="category" [(ngModel)]="expense.category"
+          [compareWith]="categoryCompare">
+          <ion-select-option *ngFor="let cat of categories" [value]="cat">{{ cat.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'Date' | translate }}</ion-label>
+        <ion-datetime name="date" [(ngModel)]="expense.expireAt"></ion-datetime>
+      </ion-item>
+    </ion-list>
+    <ion-button type="submit" color="primary" shape="round" expand="full" (click)="save()"
+      [disabled]="!expenseForm.valid">
+      {{ 'Save changes' | translate }}
+    </ion-button>
+  </form>
+</ion-content>

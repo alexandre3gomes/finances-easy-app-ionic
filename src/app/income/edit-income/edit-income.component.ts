@@ -8,7 +8,7 @@ import { IncomeService } from '../income.service';
 @Component({
   selector: 'app-edit-income',
   templateUrl: './edit-income.component.html',
-  styleUrls: [ './edit-income.component.scss' ],
+  styleUrls: ['./edit-income.component.scss'],
 })
 export class EditIncomeComponent implements OnInit {
 
@@ -23,12 +23,10 @@ export class EditIncomeComponent implements OnInit {
   ngOnInit() {
     if (this.id && this.id > 0) {
       this.incomeService.incomes.subscribe(incs => {
-        this.income = incs.filter(inc => inc.id === this.id)[ 0 ];
+        this.income = incs.filter(inc => inc.id === this.id)[0];
       });
     } else {
-      this.authService.loggedUser.subscribe(loggedUser => {
-        this.income = new Income(-1, loggedUser, '', 0, new Date());
-      })
+      this.income = new Income(-1, null, '', 0, new Date());
     }
   }
 
@@ -37,7 +35,10 @@ export class EditIncomeComponent implements OnInit {
   }
 
   save() {
-    this.modalCtrl.dismiss(this.income, 'confirm');
+    this.authService.loggedUser.subscribe(loggedUser => {
+      this.income.user = loggedUser;
+      this.modalCtrl.dismiss(this.income, 'confirm');
+    });
   }
 
 }

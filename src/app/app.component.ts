@@ -32,12 +32,7 @@ export class AppComponent {
       title: 'Category',
       url: '/category',
       icon: 'list'
-    },
-    {
-      title: 'Budget',
-      url: '/budget',
-      icon: 'calendar'
-    },
+    }
   ];
 
   constructor(

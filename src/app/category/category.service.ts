@@ -11,10 +11,10 @@ import { Category } from '../shared/model/category.model';
 })
 export class CategoryService {
 
-  private categoryEndPoint = environment.api.concat('category');
+  private _categoryEndPoint = environment.api.concat('category');
   private _categories = new BehaviorSubject<Category[]>([]);
-  private currentPage = 0;
-  private _totalPages;
+  private _canScroll = new BehaviorSubject<boolean>(true);
+  private _currentPage = 0;
 
   constructor(private http: HttpClient) { }
 
@@ -22,36 +22,36 @@ export class CategoryService {
     return this._categories.asObservable();
   }
 
-  get totalPages() {
-    return this._totalPages;
-  }
-
   canScroll() {
-    return this.currentPage < this.totalPages;
+    return this._canScroll.asObservable();
   }
 
   incrementPage() {
-    this.currentPage++;
+    this._currentPage++;
   }
 
   resetPage() {
-    this.currentPage = 0;
+    this._currentPage = 0;
+  }
+
+  resetCategories() {
+    this._categories.next([]);
   }
 
   fetchCategories() {
-    let loadedCategoriews: Category[];
-    return this.http.get(this.categoryEndPoint.concat('/list'), {
-      params: new HttpParams().set('page', this.currentPage.toString())
+    let loadedCategories: Category[];
+    return this.http.get(this._categoryEndPoint.concat('/list'), {
+      params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '10')
     }).pipe(
       switchMap((page: any) => {
-        this._totalPages = page.totalPages;
-        loadedCategoriews = page.content;
+        this._canScroll.next(page.totalPages > this._currentPage);
+        loadedCategories = page.content;
         return this.categories;
       }),
       take(1),
       map((cats: Category[]) => {
-        const newCategories = [ ...cats, ...loadedCategoriews ];
+        const newCategories = [...cats, ...loadedCategories];
         return this._categories.next(newCategories);
       })
     );
@@ -59,34 +59,63 @@ export class CategoryService {
 
   createCategory(category: Category) {
     let newCategory: Category;
-    return this.http.post<Category>(this.categoryEndPoint.concat('/create'), category).pipe(
+    return this.http.post<Category>(this._categoryEndPoint.concat('/create'), category).pipe(
       switchMap((cat: Category) => {
         newCategory = cat;
         return this.categories;
       }),
       take(1),
       tap(cats => {
-        this._categories.next(cats.concat(newCategory).sort((cat1, cat2) => cat1.name.localeCompare(cat2.name)));
+        const newCategories = [...cats];
+        newCategories.pop();
+        newCategories.unshift(newCategory);
+        newCategories.sort((cat1, cat2) => cat1.name.localeCompare(cat2.name));
+        this._categories.next(newCategories);
       })
     );
   }
 
   editCategory(category: Category) {
-    return this.http.post<Category>(this.categoryEndPoint.concat('/update'), category).pipe(
-      map((cat: Category) => {
-        return cat;
+    return this.http.post<Category>(this._categoryEndPoint.concat('/update'), category).pipe(
+      switchMap(() => {
+        return this.categories;
+      }),
+      take(1),
+      tap(cats => {
+        const newCategories = [...cats];
+        newCategories.sort((cat1, cat2) => cat1.name.localeCompare(cat2.name));
+        this._categories.next(newCategories);
       })
     );
   }
 
   deleteCategory(id: number) {
-    return this.http.delete<number>(this.categoryEndPoint.concat('/delete/').concat(id.toString())).pipe(
+    return this.http.delete<number>(this._categoryEndPoint.concat('/delete/').concat(id.toString())).pipe(
       switchMap(() => {
         return this.categories;
       }),
       take(1),
       tap(cats => {
         this._categories.next(cats.filter(elem => elem.id !== id));
+      })
+    );
+  }
+
+  fetchAllCategories() {
+    let loadedCategories: Category[];
+    return this.http.get(this._categoryEndPoint.concat('/list'), {
+      params: new HttpParams().set('page', this._currentPage.toString())
+        .set('size', '999')
+    }).pipe(
+      switchMap((page: any) => {
+        this._canScroll.next(page.totalPages > this._currentPage);
+        loadedCategories = page.content;
+        return this.categories;
+      }),
+      take(1),
+      map(() => {
+        const newCategories = [...loadedCategories];
+        return this._categories.next(newCategories);
       })
     );
   }

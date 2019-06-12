@@ -11,10 +11,10 @@ import { Income } from '../shared/model/income.model';
 })
 export class IncomeService {
 
-  private incomeEndPoint = environment.api.concat('income');
+  private _incomeEndPoint = environment.api.concat('income');
   private _incomes = new BehaviorSubject<Income[]>([]);
-  private currentPage = 0;
-  private _totalPages;
+  private _canScroll = new BehaviorSubject<boolean>(true);
+  private _currentPage = 0;
 
   constructor(private http: HttpClient) { }
 
@@ -22,36 +22,36 @@ export class IncomeService {
     return this._incomes.asObservable();
   }
 
-  get totalPages() {
-    return this._totalPages;
-  }
-
   canScroll() {
-    return this.currentPage < this.totalPages;
+    return this._canScroll.asObservable();
   }
 
   incrementPage() {
-    this.currentPage++;
+    this._currentPage++;
   }
 
   resetPage() {
-    this.currentPage = 0;
+    this._currentPage = 0;
+  }
+
+  resetIncomes() {
+    this._incomes.next([]);
   }
 
   fetchIncomes() {
     let loadedIncomes: Income[];
-    return this.http.get(this.incomeEndPoint.concat('/list'), {
-      params: new HttpParams().set('page', this.currentPage.toString())
+    return this.http.get(this._incomeEndPoint.concat('/list'), {
+      params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '10')
     }).pipe(
       switchMap((page: any) => {
-        this._totalPages = page.totalPages;
+        this._canScroll.next(page.totalPages > this._currentPage);
         loadedIncomes = page.content;
         return this.incomes;
       }),
       take(1),
       map((incs: Income[]) => {
-        const newIncomes = [ ...incs, ...loadedIncomes ];
+        const newIncomes = [...incs, ...loadedIncomes];
         return this._incomes.next(newIncomes);
       })
     );
@@ -59,28 +59,38 @@ export class IncomeService {
 
   createIncome(income: Income) {
     let newIncome: Income;
-    return this.http.post<Income>(this.incomeEndPoint.concat('/create'), income).pipe(
-      switchMap((exp: Income) => {
-        newIncome = exp;
+    return this.http.post<Income>(this._incomeEndPoint.concat('/create'), income).pipe(
+      switchMap((inc: Income) => {
+        newIncome = inc;
         return this.incomes;
       }),
       take(1),
       tap(incs => {
-        this._incomes.next(incs.concat(newIncome).sort((inc1, inc2) => new Date(inc2.date.toISOString()).getTime() - new Date(inc1.date).getTime()));
+        const newIncomes = [...incs];
+        newIncomes.pop();
+        newIncomes.unshift(newIncome);
+        newIncomes.sort((inc1, inc2) => new Date(inc2.date).getTime() - new Date(inc1.date).getTime());
+        this._incomes.next(newIncomes);
       })
     );
   }
 
   editIncome(income: Income) {
-    return this.http.post<Income>(this.incomeEndPoint.concat('/update'), income).pipe(
-      map((exp: Income) => {
-        return exp;
+    return this.http.post<Income>(this._incomeEndPoint.concat('/update'), income).pipe(
+      switchMap(() => {
+        return this.incomes;
+      }),
+      take(1),
+      tap(incs => {
+        const newIncomes = [...incs];
+        newIncomes.sort((inc1, inc2) => new Date(inc2.date).getTime() - new Date(inc1.date).getTime());
+        this._incomes.next(newIncomes);
       })
     );
   }
 
   deleteIncome(id: number) {
-    return this.http.delete<number>(this.incomeEndPoint.concat('/delete/').concat(id.toString())).pipe(
+    return this.http.delete<number>(this._incomeEndPoint.concat('/delete/').concat(id.toString())).pipe(
       switchMap(() => {
         return this.incomes;
       }),

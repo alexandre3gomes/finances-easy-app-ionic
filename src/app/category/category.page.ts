@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Category } from '../shared/model/category.model';
 import { CategoryService } from './category.service';
@@ -10,12 +10,13 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
 @Component({
   selector: 'app-category',
   templateUrl: './category.page.html',
-  styleUrls: [ './category.page.scss' ],
+  styleUrls: ['./category.page.scss'],
 })
 export class CategoryPage implements OnInit, OnDestroy {
 
   private categoriesSub: Subscription;
   public categories: Category[];
+  public canScroll: Observable<boolean>;
 
   constructor(private categoryService: CategoryService,
     private alertCtrl: AlertController,
@@ -27,18 +28,14 @@ export class CategoryPage implements OnInit, OnDestroy {
     this.categoriesSub = this.categoryService.categories.subscribe(cats => {
       this.categories = cats;
     });
+    this.categoryService.fetchCategories().subscribe();
+    this.canScroll = this.categoryService.canScroll();
   }
 
   ngOnDestroy() {
-    this.categoriesSub.unsubscribe;
-  }
-
-  ionViewWillLeave() {
+    this.categoriesSub.unsubscribe();
+    this.categoryService.resetCategories();
     this.categoryService.resetPage();
-  }
-
-  ionViewWillEnter() {
-    this.categoryService.fetchCategories().subscribe();
   }
 
   newCategory() {
@@ -127,12 +124,8 @@ export class CategoryPage implements OnInit, OnDestroy {
   }
 
   loadData(event) {
-    if (this.categoryService.canScroll()) {
-      this.categoryService.incrementPage();
-      this.categoryService.fetchCategories().subscribe(() => event.target.complete());
-    } else {
-      event.target.complete();
-    }
+    this.categoryService.incrementPage();
+    this.categoryService.fetchCategories().subscribe(() => event.target.complete());
   }
 
 }

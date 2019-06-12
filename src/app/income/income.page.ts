@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Income } from '../shared/model/income.model';
 import { EditIncomeComponent } from './edit-income/edit-income.component';
@@ -10,12 +10,14 @@ import { IncomeService } from './income.service';
 @Component({
   selector: 'app-income',
   templateUrl: './income.page.html',
-  styleUrls: [ './income.page.scss' ],
+  styleUrls: ['./income.page.scss'],
 })
 export class IncomePage implements OnInit {
 
   private incomesSub: Subscription;
   public incomes: Income[];
+  public DATE_FORMAT = 'L';
+  public canScroll: Observable<boolean>;
 
   constructor(private incomeService: IncomeService,
     private alertCtrl: AlertController,
@@ -27,18 +29,14 @@ export class IncomePage implements OnInit {
     this.incomesSub = this.incomeService.incomes.subscribe(cats => {
       this.incomes = cats;
     });
+    this.incomeService.fetchIncomes().subscribe();
+    this.canScroll = this.incomeService.canScroll();
   }
 
   ngOnDestroy() {
-    this.incomesSub.unsubscribe;
-  }
-
-  ionViewWillLeave() {
+    this.incomesSub.unsubscribe();
     this.incomeService.resetPage();
-  }
-
-  ionViewWillEnter() {
-    this.incomeService.fetchIncomes().subscribe();
+    this.incomeService.resetIncomes();
   }
 
   newIncome() {
@@ -127,12 +125,8 @@ export class IncomePage implements OnInit {
   }
 
   loadData(event) {
-    if (this.incomeService.canScroll()) {
-      this.incomeService.incrementPage();
-      this.incomeService.fetchIncomes().subscribe(() => event.target.complete());
-    } else {
-      event.target.complete();
-    }
+    this.incomeService.incrementPage();
+    this.incomeService.fetchIncomes().subscribe(() => event.target.complete());
   }
 
 

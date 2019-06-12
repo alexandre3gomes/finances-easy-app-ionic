@@ -5,6 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { SharedPipesModule } from '../shared/pipes/shared-pipes.module';
+import { EditExpenseComponent } from './edit-expense/edit-expense.component';
 import { ExpensePage } from './expense.page';
 
 const routes: Routes = [
@@ -20,8 +22,10 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     TranslateModule,
+    SharedPipesModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ ExpensePage ]
+  declarations: [ExpensePage, EditExpenseComponent],
+  entryComponents: [EditExpenseComponent]
 })
 export class ExpensePageModule { }
