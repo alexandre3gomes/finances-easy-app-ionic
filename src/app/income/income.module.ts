@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { EditIncomeComponent } from './edit-income/edit-income.component';
 import { IncomePage } from './income.page';
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [IncomePage]
+  declarations: [ IncomePage, EditIncomeComponent ],
+  entryComponents: [ EditIncomeComponent ]
 })
 export class IncomePageModule { }

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'Category' | translate }}</ion-title>
+    <ion-title>{{ 'Categories' | translate }}</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
@@ -19,6 +19,7 @@
         <ion-label>
           {{ cat.name }}
         </ion-label>
+        <ion-icon name="arrow-forward"></ion-icon>
       </ion-item>
       <ion-item-options slot="end">
         <ion-item-option color="secondary" (click)="edit(cat.id, slidingCat)">

@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ income.name }}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <form #incomeForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">{{ 'Name' | translate }}</ion-label>
+        <ion-input type="text" name="name" [(ngModel)]="income.name" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'Value' | translate }}</ion-label>
+        <ion-input type="number" name="value" [(ngModel)]="income.value" required>
+        </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">{{ 'Date' | translate }}</ion-label>
+        <ion-datetime name="date" [(ngModel)]="income.date"></ion-datetime>
+      </ion-item>
+    </ion-list>
+    <ion-button type="submit" color="primary" shape="round" expand="full" (click)="save()"
+      [disabled]="!incomeForm.valid">
+      {{ 'Save changes' | translate }}
+    </ion-button>
+  </form>
+</ion-content>

@@ -14,11 +14,20 @@ export class CategoryService {
   private categoryEndPoint = environment.api.concat('category');
   private _categories = new BehaviorSubject<Category[]>([]);
   private currentPage = 0;
+  private _totalPages;
 
   constructor(private http: HttpClient) { }
 
   get categories() {
     return this._categories.asObservable();
+  }
+
+  get totalPages() {
+    return this._totalPages;
+  }
+
+  canScroll() {
+    return this.currentPage < this.totalPages;
   }
 
   incrementPage() {
@@ -36,11 +45,14 @@ export class CategoryService {
         .set('size', '10')
     }).pipe(
       switchMap((page: any) => {
+        this._totalPages = page.totalPages;
         loadedCategoriews = page.content;
         return this.categories;
       }),
+      take(1),
       map((cats: Category[]) => {
-        return this._categories.next([...cats, ...loadedCategoriews]);
+        const newCategories = [ ...cats, ...loadedCategoriews ];
+        return this._categories.next(newCategories);
       })
     );
   }

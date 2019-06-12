@@ -10,7 +10,7 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
 @Component({
   selector: 'app-category',
   templateUrl: './category.page.html',
-  styleUrls: ['./category.page.scss'],
+  styleUrls: [ './category.page.scss' ],
 })
 export class CategoryPage implements OnInit, OnDestroy {
 
@@ -33,8 +33,11 @@ export class CategoryPage implements OnInit, OnDestroy {
     this.categoriesSub.unsubscribe;
   }
 
-  ionViewWillEnter() {
+  ionViewWillLeave() {
     this.categoryService.resetPage();
+  }
+
+  ionViewWillEnter() {
     this.categoryService.fetchCategories().subscribe();
   }
 
@@ -124,8 +127,12 @@ export class CategoryPage implements OnInit, OnDestroy {
   }
 
   loadData(event) {
-    this.categoryService.incrementPage();
-    this.categoryService.fetchCategories().subscribe(() => event.target.complete());
+    if (this.categoryService.canScroll()) {
+      this.categoryService.incrementPage();
+      this.categoryService.fetchCategories().subscribe(() => event.target.complete());
+    } else {
+      event.target.complete();
+    }
   }
 
 }
