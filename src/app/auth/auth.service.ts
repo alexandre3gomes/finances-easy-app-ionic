@@ -144,11 +144,11 @@ export class AuthService implements OnDestroy {
 
   private setUserData(user: User) {
     const expirationTime = new Date(
-      new Date().getTime() + + 3600 * 1000
+      new Date().getTime() + (3600 * 1000)
     );
-    user.tokenExpirationDate = expirationTime;
-    this._user.next(user);
-    this.autoLogout(user.tokenDuration);
-    Plugins.Storage.set({ key: 'authData', value: JSON.stringify(user) });
+    const newUser = new User(user.id, user.name, user.username, '', user.token, expirationTime);
+    this._user.next(newUser);
+    this.autoLogout(newUser.tokenDuration);
+    Plugins.Storage.set({ key: 'authData', value: JSON.stringify(newUser) });
   }
 }

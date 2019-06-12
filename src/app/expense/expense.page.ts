@@ -11,7 +11,7 @@ import { ExpenseService } from './expense.service';
 @Component({
   selector: 'app-expense',
   templateUrl: './expense.page.html',
-  styleUrls: ['./expense.page.scss'],
+  styleUrls: [ './expense.page.scss' ],
 })
 export class ExpensePage implements OnInit {
 
@@ -41,6 +41,8 @@ export class ExpensePage implements OnInit {
     this.expensesSub.unsubscribe();
     if (this.categorySub) {
       this.categorySub.unsubscribe();
+      this.categoryService.resetPage();
+      this.categoryService.resetCategories();
     }
     this.expenseService.resetPage();
     this.expenseService.resetExpenses();

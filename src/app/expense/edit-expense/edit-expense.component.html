@@ -23,8 +23,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">{{ 'Category' | translate }}</ion-label>
-        <ion-select interface="action-sheet" name="category" [(ngModel)]="expense.category"
-          [compareWith]="categoryCompare">
+        <ion-select interface="popover" name="category" [(ngModel)]="expense.category" [compareWith]="categoryCompare">
           <ion-select-option *ngFor="let cat of categories" [value]="cat">{{ cat.name }}</ion-select-option>
         </ion-select>
       </ion-item>
