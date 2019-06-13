@@ -41,9 +41,9 @@ export class ExpensePage implements OnInit {
     this.expensesSub.unsubscribe();
     if (this.categorySub) {
       this.categorySub.unsubscribe();
-      this.categoryService.resetPage();
-      this.categoryService.resetCategories();
     }
+    this.categoryService.resetPage();
+    this.categoryService.resetCategories();
     this.expenseService.resetPage();
     this.expenseService.resetExpenses();
   }
