@@ -151,4 +151,8 @@ export class AuthService implements OnDestroy {
     this.autoLogout(newUser.tokenDuration);
     Plugins.Storage.set({ key: 'authData', value: JSON.stringify(newUser) });
   }
+
+  wakeupDyno() {
+    this.http.get(this.logonEndpoint.concat('/test'), { responseType: 'text' }).subscribe(msg => console.log(msg));
+  }
 }

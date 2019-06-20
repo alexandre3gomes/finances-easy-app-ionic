@@ -43,7 +43,7 @@ export class AppComponent {
     private authService: AuthService,
     private menuCtrl: MenuController
   ) {
-    this.translate.addLangs(['en', 'pt']);
+    this.translate.addLangs([ 'en', 'pt' ]);
     this.translate.setDefaultLang('pt');
     const browserLang = this.translate.getBrowserLang();
     this.translate.use(
@@ -53,6 +53,7 @@ export class AppComponent {
   }
 
   initializeApp() {
+    this.authService.wakeupDyno();
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
