@@ -40,7 +40,7 @@ export class ExpenseService {
 
   fetchExpenses() {
     let loadedExpenses: Expense[];
-    return this.http.get(this._expenseEndPoint.concat('/list'), {
+    return this.http.get(this._expenseEndPoint, {
       params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '10')
     }).pipe(
@@ -51,7 +51,7 @@ export class ExpenseService {
       }),
       take(1),
       map((exps: Expense[]) => {
-        const newExpenses = [...exps, ...loadedExpenses];
+        const newExpenses = [ ...exps, ...loadedExpenses ];
         return this._expenses.next(newExpenses);
       })
     );
@@ -59,14 +59,14 @@ export class ExpenseService {
 
   createExpense(expense: Expense) {
     let newExpense: Expense;
-    return this.http.post<Expense>(this._expenseEndPoint.concat('/create'), expense).pipe(
+    return this.http.post<Expense>(this._expenseEndPoint, expense).pipe(
       switchMap((exp: Expense) => {
         newExpense = exp;
         return this.expenses;
       }),
       take(1),
       tap(exps => {
-        const newExpenses = [...exps];
+        const newExpenses = [ ...exps ];
         newExpenses.pop();
         newExpenses.unshift(newExpense);
         newExpenses.sort((exp1, exp2) => new Date(exp2.expireAt).getTime() - new Date(exp1.expireAt).getTime());
@@ -82,7 +82,7 @@ export class ExpenseService {
       }),
       take(1),
       tap(exps => {
-        const newExpenses = [...exps];
+        const newExpenses = [ ...exps ];
         newExpenses.sort((exp1, exp2) => new Date(exp2.expireAt).getTime() - new Date(exp1.expireAt).getTime());
         this._expenses.next(newExpenses);
       })
@@ -90,7 +90,7 @@ export class ExpenseService {
   }
 
   deleteExpense(id: number) {
-    return this.http.delete<number>(this._expenseEndPoint.concat('/delete/').concat(id.toString())).pipe(
+    return this.http.delete<number>(this._expenseEndPoint.concat('/').concat(id.toString())).pipe(
       switchMap(() => {
         return this.expenses;
       }),

@@ -40,7 +40,7 @@ export class IncomeService {
 
   fetchIncomes() {
     let loadedIncomes: Income[];
-    return this.http.get(this._incomeEndPoint.concat('/list'), {
+    return this.http.get(this._incomeEndPoint, {
       params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '10')
     }).pipe(
@@ -51,7 +51,7 @@ export class IncomeService {
       }),
       take(1),
       map((incs: Income[]) => {
-        const newIncomes = [...incs, ...loadedIncomes];
+        const newIncomes = [ ...incs, ...loadedIncomes ];
         return this._incomes.next(newIncomes);
       })
     );
@@ -59,14 +59,14 @@ export class IncomeService {
 
   createIncome(income: Income) {
     let newIncome: Income;
-    return this.http.post<Income>(this._incomeEndPoint.concat('/create'), income).pipe(
+    return this.http.post<Income>(this._incomeEndPoint, income).pipe(
       switchMap((inc: Income) => {
         newIncome = inc;
         return this.incomes;
       }),
       take(1),
       tap(incs => {
-        const newIncomes = [...incs];
+        const newIncomes = [ ...incs ];
         newIncomes.pop();
         newIncomes.unshift(newIncome);
         newIncomes.sort((inc1, inc2) => new Date(inc2.date).getTime() - new Date(inc1.date).getTime());
@@ -82,7 +82,7 @@ export class IncomeService {
       }),
       take(1),
       tap(incs => {
-        const newIncomes = [...incs];
+        const newIncomes = [ ...incs ];
         newIncomes.sort((inc1, inc2) => new Date(inc2.date).getTime() - new Date(inc1.date).getTime());
         this._incomes.next(newIncomes);
       })
@@ -90,7 +90,7 @@ export class IncomeService {
   }
 
   deleteIncome(id: number) {
-    return this.http.delete<number>(this._incomeEndPoint.concat('/delete/').concat(id.toString())).pipe(
+    return this.http.delete<number>(this._incomeEndPoint.concat('/').concat(id.toString())).pipe(
       switchMap(() => {
         return this.incomes;
       }),

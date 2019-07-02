@@ -29,15 +29,18 @@ export class HeaderInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let isWakeup = req.url.includes('/public/test');
     const loading = this.loadingCtrl.create({ keyboardClose: true, message: this.translate.instant('Loading') });
     const alert = this.alertCtrl.create(
       {
         header: this.translate.instant('Error'),
         message: this.translate.instant('There is some error'),
-        buttons: [this.translate.instant('Close')]
+        buttons: [ this.translate.instant('Close') ]
       }
     );
-    loading.then(loadingEl => loadingEl.present());
+    if (isWakeup) {
+      loading.then(loadingEl => loadingEl.present());
+    }
     let token: string;
     this.authService.token.subscribe(tok => {
       token = tok;
@@ -59,7 +62,7 @@ export class HeaderInterceptor implements HttpInterceptor {
           loading.then(loadingEl => loadingEl.dismiss());
         } else {
           alert.then(alertEl => alertEl.present());
-          this.router.navigate(['/auth']);
+          this.router.navigate([ '/auth' ]);
           loading.then(loadingEl => loadingEl.dismiss());
           return throwError(error);
         }

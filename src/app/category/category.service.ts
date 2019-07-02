@@ -40,7 +40,7 @@ export class CategoryService {
 
   fetchCategories() {
     let loadedCategories: Category[];
-    return this.http.get(this._categoryEndPoint.concat('/list'), {
+    return this.http.get(this._categoryEndPoint, {
       params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '10')
     }).pipe(
@@ -59,7 +59,7 @@ export class CategoryService {
 
   createCategory(category: Category) {
     let newCategory: Category;
-    return this.http.post<Category>(this._categoryEndPoint.concat('/create'), category).pipe(
+    return this.http.post<Category>(this._categoryEndPoint, category).pipe(
       switchMap((cat: Category) => {
         newCategory = cat;
         return this.categories;
@@ -90,7 +90,7 @@ export class CategoryService {
   }
 
   deleteCategory(id: number) {
-    return this.http.delete<number>(this._categoryEndPoint.concat('/delete/').concat(id.toString())).pipe(
+    return this.http.delete<number>(this._categoryEndPoint.concat('/').concat(id.toString())).pipe(
       switchMap(() => {
         return this.categories;
       }),
@@ -103,7 +103,7 @@ export class CategoryService {
 
   fetchAllCategories() {
     let loadedCategories: Category[];
-    return this.http.get(this._categoryEndPoint.concat('/list'), {
+    return this.http.get(this._categoryEndPoint, {
       params: new HttpParams().set('page', this._currentPage.toString())
         .set('size', '999')
     }).pipe(
