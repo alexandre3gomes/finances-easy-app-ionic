@@ -53,7 +53,6 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.authService.wakeupDyno();
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

@@ -29,7 +29,6 @@ export class HeaderInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let isWakeup = req.url.includes('/public/test');
     const loading = this.loadingCtrl.create({ keyboardClose: true, message: this.translate.instant('Loading') });
     const alert = this.alertCtrl.create(
       {
@@ -38,9 +37,8 @@ export class HeaderInterceptor implements HttpInterceptor {
         buttons: [ this.translate.instant('Close') ]
       }
     );
-    if (isWakeup) {
-      loading.then(loadingEl => loadingEl.present());
-    }
+    loading.then(loadingEl => loadingEl.present());
+
     let token: string;
     this.authService.token.subscribe(tok => {
       token = tok;
