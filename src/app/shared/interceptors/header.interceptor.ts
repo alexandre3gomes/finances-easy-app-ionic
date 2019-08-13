@@ -57,13 +57,18 @@ export class HeaderInterceptor implements HttpInterceptor {
             alertEl.message = this.translate.instant('There is relationed data');
             alertEl.present();
           });
-          loading.then(loadingEl => loadingEl.dismiss());
+        } else if (error.status === 401) {
+          alert.then(alertEl => {
+            alertEl.message = this.translate.instant('Please login again');
+            alertEl.present();
+          });
+          this.router.navigate([ '/auth' ]);
         } else {
           alert.then(alertEl => alertEl.present());
           this.router.navigate([ '/auth' ]);
-          loading.then(loadingEl => loadingEl.dismiss());
-          return throwError(error);
         }
+        loading.then(loadingEl => loadingEl.dismiss());
+        return throwError(error);
       })
     );
   }

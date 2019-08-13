@@ -65,7 +65,7 @@ export class AuthService implements OnDestroy {
         const parsedData = JSON.parse(storedData.value) as {
           token: string;
           tokenExpirationDate: string;
-          userId: string;
+          id: string;
           username: string;
           name: string;
         };
@@ -74,7 +74,7 @@ export class AuthService implements OnDestroy {
           return null;
         }
         const user = new User(
-          +parsedData.userId,
+          +parsedData.id,
           parsedData.name,
           parsedData.username,
           '',
@@ -85,8 +85,7 @@ export class AuthService implements OnDestroy {
       }),
       tap(user => {
         if (user) {
-          this._user.next(user);
-          this.autoLogout(user.tokenDuration);
+          this.setUserData(user);
         }
       }),
       map(user => {
@@ -144,7 +143,7 @@ export class AuthService implements OnDestroy {
 
   private setUserData(user: User) {
     const expirationTime = new Date(
-      new Date().getTime() + (3600 * 1000)
+      new Date().getTime() + 86400000 //A day in milliseconds
     );
     const newUser = new User(user.id, user.name, user.username, '', user.token, expirationTime);
     this._user.next(newUser);

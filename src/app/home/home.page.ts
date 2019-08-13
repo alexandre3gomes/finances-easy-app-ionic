@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
@@ -8,9 +8,9 @@ import { HomeService } from './home.service';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  styleUrls: [ 'home.page.scss' ],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage {
 
   userObs: Observable<User> = this.authService.loggedUser;
   actualIncomeObs = this.homeService.actualIncomes;
@@ -18,12 +18,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private homeService: HomeService) { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.homeService.fetchActualIncomes().subscribe();
     this.homeService.fetchActualExpenses().subscribe();
-  }
-
-  ngOnDestroy() {
-
   }
 }

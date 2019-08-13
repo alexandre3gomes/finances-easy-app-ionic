@@ -6,7 +6,7 @@ import { AuthGuard } from './shared/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -16,12 +16,12 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: './home/home.module#HomePageModule',
-    canLoad: [AuthGuard]
+    canLoad: [ AuthGuard ]
   },
-  { path: 'category', loadChildren: './category/category.module#CategoryPageModule', canLoad: [AuthGuard] },
-  { path: 'income', loadChildren: './income/income.module#IncomePageModule', canLoad: [AuthGuard] },
-  { path: 'expense', loadChildren: './expense/expense.module#ExpensePageModule', canLoad: [AuthGuard] },
-  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canLoad: [AuthGuard] },
+  { path: 'category', loadChildren: './category/category.module#CategoryPageModule', canLoad: [ AuthGuard ] },
+  { path: 'income', loadChildren: './income/income.module#IncomePageModule', canLoad: [ AuthGuard ] },
+  { path: 'expense', loadChildren: './expense/expense.module#ExpensePageModule', canLoad: [ AuthGuard ] },
+  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canLoad: [ AuthGuard ] },
   { path: 'income', loadChildren: './income/income.module#IncomePageModule' }
 
 ];
@@ -30,6 +30,6 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule]
+  exports: [ RouterModule ]
 })
 export class AppRoutingModule { }
